@@ -1,5 +1,5 @@
-function [fitresult, gof] = createFit(k_best, sigma)
-%CREATEFIT(K_BEST,SIGMA)
+function [fitresult, gof] = kfit(k_best, sigma)
+%KFIT(K_BEST,SIGMA)
 %  Create a fit.
 %
 %  Data for 'k_fit' fit:
