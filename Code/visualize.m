@@ -52,4 +52,9 @@ for i = 1:8
     title(sprintf("Test Data %d", i))
     plot(ks, spike_num(i) * ones(k_size))
 end
-    
+   
+%% Best ks
+k_best = zeros(N, 1);
+for i = 1:N
+    [~, k_best(i)] = min(abs(peak_num(i,:)-spike_num(i)));
+end
