@@ -6,7 +6,7 @@ M = 1440000;
 % Vars for storing the data.
 spike_data = zeros(N, M);
 spike_num = zeros(N, 1);
-for i = 1:8
+for i = 1:N
     filename = sprintf("Data_Test_%d.mat", i);
     load(filename);
     if length(data) ~= M
@@ -30,10 +30,10 @@ end
 %% Noise standard deviation estimation
 sigma = median(abs(spike_data), 2) ./ 0.6745;
 %% Find spikes
-peak_num = zeros(N,16);
 ks = 2:0.1:5;
 k_size = size(ks, 2);
-for i = 1:8
+peak_num = zeros(N,k_size);
+for i = 1:N
     cnt = 1;
     for k = ks
         peak_num(i,cnt) = sum(findpeaks(spike_data(i,:)) > k*sigma(i));
@@ -56,5 +56,10 @@ end
 %% Best ks
 k_best = zeros(N, 1);
 for i = 1:N
-    [~, k_best(i)] = min(abs(peak_num(i,:)-spike_num(i)));
+    [~, idx] = min(abs(peak_num(i,:)-spike_num(i)));
+    k_best(i) = ks(idx);
 end
+
+%% Create model for k
+k_model = kfit(sigma, k_best);
+
