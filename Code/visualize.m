@@ -60,6 +60,13 @@ for i = 1:N
     k_best(i) = ks(idx);
 end
 
-%% Create model for k
-k_model = kfit(sigma, k_best);
+%% Data for creating models
+model_sigmas = sigma;
+model_k = k_best;
+
+%% Create models for k
+k_model = kfit(model_sigmas, model_k);
+k_model2 = kfit2(model_sigmas, model_k);
+
+clear sigma k_best
 
