@@ -73,16 +73,16 @@ spike_pairs = cell(4, 1);
 for j=1:N
     cnum = size(spike_times{j}, 2);
     next_id = 1;
-    spike_pairs{j} = zeros(cnum, 1);
-    for i=1:spikeNumEst(j)
-        if next_id > cnum
+    spike_pairs{j} = zeros(spikeNumEst(j), 1, 'uint32');
+    for i=1:cnum
+        if next_id > spikeNumEst(j)
             break;  
         end
-        if next_id < cnum && spike_times{j}(next_id+1) < spikeTimesEst{j}(i)
+        while next_id < spikeNumEst(j) && spike_times{j}(i) > spikeTimesEst{j}(next_id)
             next_id = next_id + 1;
         end
-        if spikeTimesEst{j}(i)-spike_times{j}(next_id) < 33
-            spike_pairs{j}(next_id) = spikeTimesEst{j}(i);
+        if spikeTimesEst{j}(next_id)-spike_times{j}(i) < 33
+            spike_pairs{j}(next_id) = i;
             next_id = next_id + 1;
         end
     end
