@@ -1,13 +1,20 @@
 %% spike classification
 maxA = cell(N, 1);
 zc = cell(N, 1);
+sums = cell(N, 1);
+energy = cell(N, 1);
 for j = 1:N
     maxA{j} = zeros(spikeNumEst(j), 1);
     zc{j} = zeros(spikeNumEst(j), 1);
+    sums{j} = zeros(spikeNumEst(j), 1);
+    energy{j} = zeros(spikeNumEst(j), 1);
     for i = 1:spikeNumEst(j)
         spike = spikeEst{j}(i, :);
         maxA{j}(i) = max(spike)-min(spike);
         zc{j}(i) = sum(spike(1:end-1) <= 0 & spike(2:end) > 0) + sum(spike(1:end-1) > 0 & spike(2:end) > 0);
+        sums{j}(i) = sum(spike);
+        F = fft(spike);
+        energy{j}(i) = sum(F.*conj(F));
     end
 end
 
@@ -23,6 +30,8 @@ for j = 1:N
     found = spike_pairs{j}(valid_idx);
     Data{j}(:,1) = zc{j}(valid_idx);
     Data{j}(:,2) = maxA{j}(valid_idx);
+    Data{j}(:,3) = sums{j}(valid_idx);
+    Data{j}(:,4) = energy{j}(valid_idx);
     group{j}(:,1) = spike_class{j}(found);
     gscatter(zc{j}(valid_idx), maxA{j}(valid_idx), spike_class{j}(found))
 end
@@ -30,7 +39,7 @@ end
 %% Classification
 pcs = zeros(4, 1);
 for i=1:N
-    pcs(i) = MyClassify(Data{i}(:, 1:2), group{i});
+    pcs(i) = MyClassify(Data{i}(:, [1,2,3,4]), group{i});
 end
 %{
 %% Useful characteristics
