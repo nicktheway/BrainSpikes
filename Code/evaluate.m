@@ -36,13 +36,11 @@ spike_num = zeros(N,1);
 spike_locs = cell(N, 1);
 spike_cl = cell(N, 1);
 for i = 1:N
-    [peaks, locs] = findpeaks(spike_data(i,:));
+    [peaks, locs] = findpeaks(spike_data(i,:), 'MinPeakDistance', 64);
     threshold = k_predicted(i) * sigma(i);
-    
-    spike_locs{i} = locs(peaks > threshold);
-    valid_locs = spike_locs{i}-[0 spike_locs{i}(1:end-1)] > 63;
+    valid_locs = peaks > threshold;
     spike_cl{i} = peaks(valid_locs);
-    spike_locs{i} = spike_locs{i}(valid_locs);
+    spike_locs{i} = locs(valid_locs);
     spike_num(i) = size(spike_cl{i}, 2);
 end
 
