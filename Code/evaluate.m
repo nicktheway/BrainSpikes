@@ -55,10 +55,9 @@ for j=1:N
     subplot(2,2,j)
     spikeEst{j} = zeros(spikeNumEst(j), 65);
     for i=1:spikeNumEst(j)
-        search_range = spikeTimesEst{j}(i) - 30: spikeTimesEst{j}(i) + 30;
+        search_range = spikeTimesEst{j}(i) - 30 : spikeTimesEst{j}(i) + 30;
         [~, min_idx] = min(spike_data(j, search_range));
         [~, max_idx] = max(spike_data(j, search_range));
-        %center = min(min_idx + spikeTimesEst{j}(i)-30, spikeTimesEst{j}(i));
         center = min(min_idx, max_idx) + spikeTimesEst{j}(i) - 30;
         spikeEst{j}(i,:) = spike_data(j, center-20:center+44);
     end
@@ -66,6 +65,29 @@ for j=1:N
     title(sprintf("Data Eval %d", j))
     xlim([0 65])
 end
+
+clear min_idx max_idx center search_range
+
+%% Find spike-estimated spike pairs
+spike_pairs = cell(4, 1);
+for j=1:N
+    cnum = size(spike_times{j}, 2);
+    next_id = 1;
+    spike_pairs{j} = zeros(cnum, 1);
+    for i=1:spikeNumEst(j)
+        if next_id > cnum
+            break;  
+        end
+        if next_id < cnum && spike_times{j}(next_id+1) < spikeTimesEst{j}(i)
+            next_id = next_id + 1;
+        end
+        if spikeTimesEst{j}(i)-spike_times{j}(next_id) < 33
+            spike_pairs{j}(next_id) = spikeTimesEst{j}(i);
+            next_id = next_id + 1;
+        end
+    end
+end
+    
 %{
 %% Useful characteristics
 spike_cycles = zeros(4,1);
