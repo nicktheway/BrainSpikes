@@ -32,16 +32,45 @@ for i=1:N
 end
 
 %% Find spikes
-spike_num = zeros(N,1);
-spike_locs = cell(N, 1);
-spike_cl = cell(N, 1);
+spikeNumEst = zeros(N,1);
+spikeTimesEst = cell(N, 1);
+spikeHeigh = cell(N, 1);
 for i = 1:N
-    [peaks, locs] = findpeaks(spike_data(i,:), 'MinPeakDistance', 64);
+    [peaks, locs] = findpeaks(spike_data(i,:)); %, 'MinPeakDistance', 64);
     threshold = k_predicted(i) * sigma(i);
     valid_locs = peaks > threshold;
-    spike_cl{i} = peaks(valid_locs);
-    spike_locs{i} = locs(valid_locs);
-    spike_num(i) = size(spike_cl{i}, 2);
+    spikeHeigh{i} = peaks(valid_locs);
+    spikeTimesEst{i} = locs(valid_locs);
+    spikeNumEst(i) = size(spikeHeigh{i}, 2);
 end
 
 clear valid_locs threshold
+
+
+%% Plot spikes
+j = 1;
+spikeEst = cell(N, 1);
+figure('Name', "Sorted peaks")
+for j=1:N
+    subplot(2,2,j)
+    spikeEst{j} = zeros(spikeNumEst(j), 65);
+    for i=1:spikeNumEst(j)
+        search_range = spikeTimesEst{j}(i) - 30: spikeTimesEst{j}(i) + 30;
+        [~, min_idx] = min(spike_data(j, search_range));
+        [~, max_idx] = max(spike_data(j, search_range));
+        %center = min(min_idx + spikeTimesEst{j}(i)-30, spikeTimesEst{j}(i));
+        center = min(min_idx, max_idx) + spikeTimesEst{j}(i) - 30;
+        spikeEst{j}(i,:) = spike_data(j, center-20:center+44);
+    end
+    plot(spikeEst{j}')
+    title(sprintf("Data Eval %d", j))
+    xlim([0 65])
+end
+%{
+%% Useful characteristics
+spike_cycles = zeros(4,1);
+for i=1:N
+    spike_cycles(i) = mean(diff(spike_cl{i}));
+end
+
+%}
