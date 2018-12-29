@@ -32,7 +32,18 @@ for i=1:N
 end
 
 %% Find spikes
-peak_num = zeros(N,1);
+spike_num = zeros(N,1);
+spike_locs = cell(N, 1);
+spike_cl = cell(N, 1);
 for i = 1:N
-    peak_num(i) = sum(findpeaks(spike_data(i,:)) > k_predicted(i)*sigma(i));
+    [peaks, locs] = findpeaks(spike_data(i,:));
+    threshold = k_predicted(i) * sigma(i);
+    
+    spike_locs{i} = locs(peaks > threshold);
+    valid_locs = spike_locs{i}-[0 spike_locs{i}(1:end-1)] > 63;
+    spike_cl{i} = peaks(valid_locs);
+    spike_locs{i} = spike_locs{i}(valid_locs);
+    spike_num(i) = size(spike_cl{i}, 2);
 end
+
+clear valid_locs threshold
