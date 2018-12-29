@@ -87,6 +87,15 @@ for j=1:N
         end
     end
 end
+
+clear next_id
+
+%% Percentage of spike-pairing
+pairing_pc = zeros(N, 1);
+for i=1:N
+    dif = sum(spike_pairs{i} == 0) + spikeNumEst(i) -  size(spike_times{i}, 2);
+    pairing_pc(i) = (spikeNumEst(i) - dif) / spikeNumEst(i); 
+end
     
 %{
 %% Useful characteristics
