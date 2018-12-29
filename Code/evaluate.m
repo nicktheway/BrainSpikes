@@ -96,12 +96,3 @@ for i=1:N
     dif = sum(spike_pairs{i} == 0) + spikeNumEst(i) -  size(spike_times{i}, 2);
     pairing_pc(i) = (spikeNumEst(i) - dif) / spikeNumEst(i); 
 end
-    
-%{
-%% Useful characteristics
-spike_cycles = zeros(4,1);
-for i=1:N
-    spike_cycles(i) = mean(diff(spike_cl{i}));
-end
-
-%}
