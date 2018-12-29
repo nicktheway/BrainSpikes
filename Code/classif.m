@@ -15,19 +15,23 @@ clear spike
 
 %% Scatter plot
 figure('Name', 'Scatter plots')
-characteristics = cell(N, 1);
+Data = cell(N, 1);
+group = cell(N, 1);
 for j = 1:N
     subplot(2,2, j)
     valid_idx = spike_pairs{j} ~= 0;
     found = spike_pairs{j}(valid_idx);
-    characteristics{j}(:,1) = zc{j}(valid_idx);
-    characteristics{j}(:,2) = maxA{j}(valid_idx);
-    characteristics{j}(:,3) = spike_class{j}(found);
+    Data{j}(:,1) = zc{j}(valid_idx);
+    Data{j}(:,2) = maxA{j}(valid_idx);
+    group{j}(:,1) = spike_class{j}(found);
     gscatter(zc{j}(valid_idx), maxA{j}(valid_idx), spike_class{j}(found))
 end
 
 %% Classification
-pc1 = MyClassify(characteristics{1}(:, 1:2), characteristics{1}(:, 3));
+pcs = zeros(4, 1);
+for i=1:N
+    pcs(i) = MyClassify(Data{i}(:, 1:2), group{i});
+end
 %{
 %% Useful characteristics
 spike_cycles = zeros(4,1);
