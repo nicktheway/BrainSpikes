@@ -48,7 +48,7 @@ for i = 1:8
     hold on;
     plot(ks, peak_num(i, :))
     xlabel('k')
-    ylabel('Spike Number');
+    ylabel('#Spikes');
     title(sprintf("Test Data %d", i))
     plot(ks, spike_num(i) * ones(k_size))
 end
