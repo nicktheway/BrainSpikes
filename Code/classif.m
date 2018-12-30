@@ -67,11 +67,3 @@ pcs = zeros(4, 1);
 for i=1:N
     pcs(i) = MyClassify(Data{i}(:, [1:6]), group{i});
 end
-%{
-%% Useful characteristics
-spike_cycles = zeros(4,1);
-for i=1:N
-    spike_cycles(i) = mean(diff(spike_cl{i}));
-end
-
-%}

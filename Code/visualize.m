@@ -65,7 +65,6 @@ model_sigmas = sigma;
 model_k = k_best;
 
 %% Create model for k
-% k_model = kfit(model_sigmas, model_k);
 k_model = kfit2(model_sigmas, model_k);
 
 clear sigma k_best
